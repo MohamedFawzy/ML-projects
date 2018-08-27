@@ -1,2 +1,5 @@
-# spam-classifier
-Spam classifier for web
+# Machine learning projects and ideas
+
+## Classification 
+
+- Spam classifier.
