@@ -1,0 +1,14 @@
+version: '3'
+services:
+  notebook:
+    container_name: python_notebook
+    labels:
+      description: Intel Python 2 using Jupyter Notebooks
+      name: jupyter notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - ../source:/home/notebooks
+    build:
+      context: ./services/jupyter
+      dockerfile: Dockerfile
