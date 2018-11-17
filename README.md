@@ -11,6 +11,7 @@
 - python 3.x
 
 ## Install
+
 ### Using docker run the following commands 
 - `cd docker`
 - `docker-compose up`
@@ -25,3 +26,7 @@
 ## Classification 
 
 - Spam classifier.
+
+
+##Timeseries:
+- Heartbeats
