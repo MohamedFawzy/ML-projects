@@ -104,3 +104,6 @@ venv.bak/
 .mypy_cache/
 # Pycharm
 .idea
+
+.DS_Store
+training.zip
