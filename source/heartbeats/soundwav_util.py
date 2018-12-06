@@ -16,7 +16,7 @@ def convert_to_spectrogram(wav_file, class_label):
     file_name = os.path.basename(wav_file).rstrip(".wav")
     if (class_label == 1):
         print('saving file =====> ', 'data/abnormal/' + str(file_name) + '.png')
-        plt.savefig('data/abnormal/' + str(file_name) + '.png',
+        plt.savefig('t/data/abnormal/' + str(file_name) + '.png',
                     dpi=100,  # Dots per inch
                     frameon='false',
                     aspect='normal',
@@ -24,7 +24,7 @@ def convert_to_spectrogram(wav_file, class_label):
                     pad_inches=0)  # Spectrogram saved as a .png
     else:
         print('saving file ====> ', 'data/normal/' + str(file_name) + '.png')
-        plt.savefig('data/normal/' + str(file_name) + '.png',
+        plt.savefig('t/data/normal/' + str(file_name) + '.png',
                     dpi=100,  # Dots per inch
                     frameon='false',
                     aspect='normal',
