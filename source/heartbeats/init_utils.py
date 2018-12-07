@@ -16,6 +16,8 @@ from IPython.display import Image
 from IPython.display import display
 
 import matplotlib.pyplot as plt
+import keras.backend as K
+
 
 IMG_WIDTH, IMG_HEIGHT = 150, 150
 
@@ -124,3 +126,103 @@ def data_augmentation():
         batch_size=64,
         class_mode='binary'
     )
+
+    return train_data_generator, validation_data_generator
+
+def precision(y_true, y_pred):
+    """
+
+    :param y_true:
+    :param y_pred:
+    :return: precision number
+    """
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+    precision = true_positives / (predicted_positives + K.epsilon())
+    return precision
+
+
+def recall(y_true, y_pred):
+    """
+
+    :param y_true:
+    :param y_pred:
+    :return:
+    """
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+    recall = true_positives / (possible_positives + K.epsilon())
+    return recall
+
+
+def fbeta_score(y_true, y_pred, beta=1):
+    """
+
+    :param y_true:
+    :param y_pred:
+    :param beta:
+    :return:
+    """
+    if beta < 0:
+        raise ValueError('The lowest choosable beta is zero (only precision).')
+
+    # If there are no true positives, fix the F score at 0 like sklearn.
+    if K.sum(K.round(K.clip(y_true, 0, 1))) == 0:
+        return 0
+
+    p = precision(y_true, y_pred)
+    r = recall(y_true, y_pred)
+    bb = beta ** 2
+    fbeta_score = (1 + bb) * (p * r) / (bb * p + r + K.epsilon())
+    return fbeta_score
+
+def results(history):
+    """
+
+    :param history:
+    :return: figure for accuracy and loss
+    """
+    # Accuracy
+    plt.figure(figsize=(15, 5))
+    plt.subplot(1, 2, 1)
+    plt.plot(history.history['acc']); plt.plot(history.history['val_acc']);
+    plt.title('model accuracy'); plt.ylabel('accuracy');
+    plt.xlabel('epoch'); plt.legend(['train', 'valid'], loc='upper left');
+
+    # Loss
+    plt.subplot(1, 2, 2)
+    plt.plot(history.history['loss']); plt.plot(history.history['val_loss']);
+    plt.title('model loss'); plt.ylabel('loss');
+    plt.xlabel('epoch'); plt.legend(['train', 'valid'], loc='upper left');
+    plt.show()
+
+
+def small_cnn(train_data, validation_data, n_epoch=5, train_samples=1000, validation_samples=255):
+
+    model = Sequential()
+
+    # # layer 1
+    model.add(Convolution2D(32, kernel_size=(3,3)), input_shape=(IMG_WIDTH, IMG_HEIGHT))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+
+    # layer 2
+    model.add(Convolution2D(64, kernel_size= (3, 3)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+
+    # layer 3
+    model.add(Convolution2D(128, kernel_size= (3, 3)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    # layer 4
+    model.add(Flatten())
+    model.add(Dense(256))
+    model.add(Dense(1))
+    model.add(Activation('sigmoid'))
+
+
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', precision, recall, fbeta_score])
+
+    return model.fit_generator(train_data,samples_per_epoch = train_samples,nb_epoch = n_epoch,validation_data =  validation_data,nb_val_samples = validation_samples)
+
