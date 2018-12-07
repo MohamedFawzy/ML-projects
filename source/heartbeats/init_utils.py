@@ -96,3 +96,31 @@ def visualize_samples(normal_train, normal_validation, abnormal_train, abnormal_
 
     plt.tight_layout()
     plt.show()
+
+
+def data_augmentation():
+    """
+        generate images from current images to feed the network with larger dataset to help it for better training data
+        :return: generated images from data
+    """
+    data_generation = ImageDataGenerator(
+        rescale=1./255,
+        shear_range=0.4,
+        zoom_range=0.3,
+        horizontal_flip=True
+    )
+
+    train_data_generator = data_generation.flow_from_directory(
+        train_data_path,
+        target_size=(IMG_WIDTH, IMG_HEIGHT),
+        batch_size=64,
+        class_mode='binary'
+    )
+
+
+    validation_data_generator = data_generation.flow_from_directory(
+        validation_data_path,
+        target_size=(IMG_WIDTH, IMG_HEIGHT),
+        batch_size=64,
+        class_mode='binary'
+    )
