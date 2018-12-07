@@ -18,7 +18,6 @@ from IPython.display import display
 import matplotlib.pyplot as plt
 import keras.backend as K
 
-
 IMG_WIDTH, IMG_HEIGHT = 150, 150
 
 train_data_path = 'data/t'
@@ -81,14 +80,14 @@ def visualize_samples(normal_train, normal_validation, abnormal_train, abnormal_
     opacity = 0.7
 
     fig1 = plt.bar(index, train_samples, bar_width,
-                     alpha=opacity,
-                     color='r',
-                     label='normal')
+                   alpha=opacity,
+                   color='r',
+                   label='normal')
 
     fig2 = plt.bar(index + bar_width, validation_samples, bar_width,
-                     alpha=opacity,
-                     color='b',
-                     label='abnormal')
+                   alpha=opacity,
+                   color='b',
+                   label='abnormal')
 
     plt.xlabel('Classes')
     plt.ylabel('Number of Samples')
@@ -106,7 +105,7 @@ def data_augmentation():
         :return: generated images from data
     """
     data_generation = ImageDataGenerator(
-        rescale=1./255,
+        rescale=1. / 255,
         shear_range=0.4,
         zoom_range=0.3,
         horizontal_flip=True
@@ -119,7 +118,6 @@ def data_augmentation():
         class_mode='binary'
     )
 
-
     validation_data_generator = data_generation.flow_from_directory(
         validation_data_path,
         target_size=(IMG_WIDTH, IMG_HEIGHT),
@@ -128,6 +126,7 @@ def data_augmentation():
     )
 
     return train_data_generator, validation_data_generator
+
 
 def precision(y_true, y_pred):
     """
@@ -176,6 +175,7 @@ def fbeta_score(y_true, y_pred, beta=1):
     fbeta_score = (1 + bb) * (p * r) / (bb * p + r + K.epsilon())
     return fbeta_score
 
+
 def results(history):
     """
 
@@ -185,44 +185,49 @@ def results(history):
     # Accuracy
     plt.figure(figsize=(15, 5))
     plt.subplot(1, 2, 1)
-    plt.plot(history.history['acc']); plt.plot(history.history['val_acc']);
-    plt.title('model accuracy'); plt.ylabel('accuracy');
-    plt.xlabel('epoch'); plt.legend(['train', 'valid'], loc='upper left');
+    plt.plot(history.history['acc']);
+    plt.plot(history.history['val_acc']);
+    plt.title('model accuracy');
+    plt.ylabel('accuracy');
+    plt.xlabel('epoch');
+    plt.legend(['train', 'valid'], loc='upper left');
 
     # Loss
     plt.subplot(1, 2, 2)
-    plt.plot(history.history['loss']); plt.plot(history.history['val_loss']);
-    plt.title('model loss'); plt.ylabel('loss');
-    plt.xlabel('epoch'); plt.legend(['train', 'valid'], loc='upper left');
+    plt.plot(history.history['loss']);
+    plt.plot(history.history['val_loss']);
+    plt.title('model loss');
+    plt.ylabel('loss');
+    plt.xlabel('epoch');
+    plt.legend(['train', 'valid'], loc='upper left');
     plt.show()
 
 
-def small_cnn(train_data, validation_data, n_epoch=5, train_samples=1000, validation_samples=255):
-
+def small_cnn(train_data, validation_data, n_epoch=5, n_train_samples=1000, n_validation_samples=255):
     model = Sequential()
 
     # # layer 1
-    model.add(Convolution2D(32, kernel_size=(3,3)), input_shape=(IMG_WIDTH, IMG_HEIGHT))
+    model.add(Convolution2D(32, kernel_size=(3, 3), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # layer 2
-    model.add(Convolution2D(64, kernel_size= (3, 3)))
+    model.add(Convolution2D(64, kernel_size=(3, 3)))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
     # layer 3
-    model.add(Convolution2D(128, kernel_size= (3, 3)))
+    model.add(Convolution2D(128, kernel_size=(3, 3)))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     # layer 4
     model.add(Flatten())
     model.add(Dense(256))
     model.add(Dense(1))
     model.add(Activation('sigmoid'))
 
-
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', precision, recall, fbeta_score])
 
-    return model.fit_generator(train_data,samples_per_epoch = train_samples,nb_epoch = n_epoch,validation_data =  validation_data,nb_val_samples = validation_samples)
 
+    return model.fit_generator(train_data, samples_per_epoch=n_train_samples, nb_epoch=n_epoch,
+                               validation_data=validation_data, nb_val_samples=n_validation_samples)
