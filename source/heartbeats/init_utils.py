@@ -203,8 +203,10 @@ def results(history):
     plt.show()
 
 
+
+model = Sequential()
+
 def small_cnn(train_data, validation_data, n_epoch=5, n_train_samples=1000, n_validation_samples=255):
-    model = Sequential()
 
     # # layer 1
     model.add(Convolution2D(32, kernel_size=(3, 3), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
@@ -231,3 +233,7 @@ def small_cnn(train_data, validation_data, n_epoch=5, n_train_samples=1000, n_va
 
     return model.fit_generator(train_data, samples_per_epoch=n_train_samples, nb_epoch=n_epoch,
                                validation_data=validation_data, nb_val_samples=n_validation_samples)
+
+
+def evaluate(validation_data, validation_samples):
+    return model.evaluate_generator(validation_data, validation_samples)
