@@ -203,11 +203,10 @@ def results(history):
     plt.show()
 
 
-
 model = Sequential()
 
-def small_cnn(train_data, validation_data, n_epoch=5, n_train_samples=1000, n_validation_samples=255):
 
+def small_cnn(train_data, validation_data, n_epoch=5, n_train_samples=1000, n_validation_samples=255):
     # # layer 1
     model.add(Convolution2D(32, kernel_size=(3, 3), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
     model.add(Activation('relu'))
@@ -230,10 +229,85 @@ def small_cnn(train_data, validation_data, n_epoch=5, n_train_samples=1000, n_va
 
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', precision, recall, fbeta_score])
 
-
     return model.fit_generator(train_data, samples_per_epoch=n_train_samples, nb_epoch=n_epoch,
                                validation_data=validation_data, nb_val_samples=n_validation_samples)
 
 
 def evaluate(validation_data, validation_samples):
     return model.evaluate_generator(validation_data, validation_samples)
+
+
+mod = Sequential()
+def deeper_cnn(train_data, validation_data, n_epoch=5, n_train_samples=1000, n_validation_samples=255):
+    """
+
+    :param train_data:
+    :param validation_data:
+    :param n_epoch:
+    :param n_train_samples:
+    :param n_validation_samples:
+    :return: trained network with classification
+    """
+
+    # first layer
+    mod.add(Convolution2D(32, kernel_size=(3, 3), use_bias=True))
+    mod.add(ZeroPadding2D((1, 1), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
+    mod.add(BatchNormalization())
+    mod.add(Activation("relu"))
+    mod.add(Dropout(0.5))
+    mod.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    # 2nd layer
+    mod.add(Convolution2D(64, kernel_size=(3, 3), use_bias=True))
+    mod.add(ZeroPadding2D((1, 1), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
+    mod.add(BatchNormalization())
+    mod.add(Activation('relu'))
+    mod.add(Dropout(0.5))
+    mod.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    mod.add(Convolution2D(128, kernel_size=(3, 3), use_bias=True))
+    mod.add(ZeroPadding2D((1, 1), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
+    mod.add(BatchNormalization())
+    mod.add(Activation("relu"))
+    mod.add(Dropout(0.5))
+    mod.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+
+    mod.add(Convolution2D(256, kernel_size=(3, 3), use_bias=True))
+    mod.add(ZeroPadding2D((1, 1), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
+    mod.add(BatchNormalization())
+    mod.add(Activation("relu"))
+    mod.add(Dropout(0.5))
+    mod.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+
+    mod.add(Convolution2D(512, kernel_size=(3, 3), use_bias=True))
+    mod.add(ZeroPadding2D((1, 1), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
+    mod.add(BatchNormalization())
+    mod.add(Activation("relu"))
+    mod.add(Dropout(0.5))
+    mod.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+    mod.add(Convolution2D(512, kernel_size=(3, 3), use_bias=True))
+    mod.add(ZeroPadding2D((1, 1), input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)))
+    mod.add(BatchNormalization())
+    mod.add(Activation("relu"))
+    mod.add(Dropout(0.5))
+    mod.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+
+    mod.add(Flatten())
+    mod.add(Dense(1024))
+    mod.add(BatchNormalization())
+    mod.add(Activation('relu'))
+    mod.add(Dropout(0.5))
+    mod.add(Dense(1))
+    mod.add(BatchNormalization())
+    mod.add(Activation('sigmoid'))
+
+
+
+    mod.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', precision, recall, fbeta_score])
+
+    return mod.fit_generator(train_data, samples_per_epoch=n_train_samples, nb_epoch=n_epoch,
+                               validation_data=validation_data, nb_val_samples=n_validation_samples)
