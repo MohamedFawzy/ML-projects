@@ -106,7 +106,4 @@ venv.bak/
 .idea
 
 .DS_Store
-training.zip
-Atraining_normal.zip
-Atraining_normal
-sample2016.zip
+source/heartbeats/data/
