@@ -2,8 +2,7 @@ from scipy.io import wavfile
 import os
 from shutil import copyfile
 import csv
-
-
+from keras.utils.training_utils import multi_gpu_model
 
 def move_to_dir(wav_file, class_label):
     file_name = os.path.basename(wav_file)
