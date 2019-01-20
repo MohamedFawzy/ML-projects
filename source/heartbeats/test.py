@@ -27,7 +27,7 @@ librosa.feature.mfcc(y=y, sr=sr)
 
 S = librosa.feature.melspectrogram(y=y, sr=sr)
 
-pylab.figure(figsize=(10, 4))
+pylab.figure(figsize=(4, 4))
 pylab.axis('off')
 pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
 librosa.display.specshow(librosa.power_to_db(S, ref=np.max))
@@ -49,9 +49,25 @@ mfccs = librosa.feature.mfcc(S=librosa.power_to_db(S, ref=np.max))
 # Visualize the MFCC series
 #librosa.display.specshow(mfccs, cmap='Set1',x_axis='time')
 # Plotting the spectrogram and save as JPG without axes (just the image)
-pylab.figure(figsize=(10, 4))
-pylab.axis('off')
-pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
-librosa.display.specshow(mfccs, cmap='Set1')
-pylab.savefig('test.jpg', bbox_inches=None, pad_inches=0)
-pylab.close()
+cmaps = [
+            'inferno', 'magma', 'plasma', 'viridis', 'BrBG', 'PiYG', 'PRGn',
+            'PuOr', 'RdBu', 'RdGy', 'RdYlBu', 'RdYlGn', 'Spectral',
+            'Blues', 'BuGn', 'BuPu', 'GnBu', 'Greens', 'Greys', 'Oranges', 'OrRd', 'PuBu', 'PuBuGn', 'PuRd',
+            'Purples', 'RdPu', 'Reds', 'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd', 'Accent', 'Dark2', 'Paired',
+            'Pastel1', 'Pastel2','Set1', 'Set2', 'Set3', 'autumn', 'bone', 'cool', 'copper', 'flag', 'gray', 'hot',
+            'jet', 'pink', 'prism', 'spring', 'summer', 'winter', 'gist_earth', 'gist_heat', 'gist_ncar', 'gist_rainbow',
+            'gist_stern', 'hsv', 'twilight', 'twilight_shifted', 'afmhot', 'brg', 'bwr', 'coolwarm', 'CMRmap',
+            'cubehelix', 'gnuplot', 'gnuplot2', 'ocean', 'rainbow', 'seismic', 'nipy_spectral', 'terrain',
+            'gist_gray', 'gist_yarg', 'binary'
+         ]
+#
+# pylab.figure(figsize=(4, 4))
+# pylab.axis('off')
+# pylab.axes([0., 0., 1., 1.], frameon=False, xticks=[], yticks=[])  # Remove the white edge
+#
+# for cmap in cmaps:
+#     print(cmap)
+#     librosa.display.specshow(mfccs, cmap=str(cmap))
+#     pylab.savefig('test-'+str(cmap)+'.jpg', bbox_inches=None, pad_inches=0)
+#
+# pylab.close()

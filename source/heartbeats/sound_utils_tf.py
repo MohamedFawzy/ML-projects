@@ -49,7 +49,7 @@ png = tf.image.encode_png(cast)
 with tf.Session() as sess:
     # Run the computation graph and save the png encoded image to a file
     image = sess.run(png, feed_dict={
-      wav_file: 'data/training/training-a/a0001.wav', brightness: 100})
+      wav_file: '/Users/mohamedfawzy/Workspace/panotti/examples/physionet2016/training-a/a0059.wav', brightness: 100})
 
     with open('output.png', 'wb') as f:
         f.write(image)
